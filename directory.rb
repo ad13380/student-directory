@@ -1,3 +1,5 @@
+@students = []
+
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
@@ -18,7 +20,7 @@ def print_header
   puts "-------------"
 end
 
-def print
+def print_student_list
   @students.each { |student| puts "#{student[:name]} (#{student[:cohort]} cohort)" }
 end
 
@@ -34,25 +36,27 @@ end
 
 def show_students
   print_header
-  print
+  print_student_list
   print_footer
 end
 
+def process(selection)
+  case selection
+  when "1"
+    input_students
+  when "2"
+    show_students
+  when "9"
+    exit # this will cause the program to terminate
+  else
+    puts "I don't know what you meant, try again"
+  end
+end
+
 def interactive_menu
-  @students = []
   loop do
     print_menu
-    selection = gets.chomp
-    case selection
-    when "1"
-      input_students
-    when "2"
-      show_students
-    when "9"
-      exit # this will cause the program to terminate
-    else
-      puts "I don't know what you meant, try again"
-    end
+    process(gets.chomp)
   end
 end
 
