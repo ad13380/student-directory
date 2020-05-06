@@ -49,13 +49,13 @@ end
 
 def save_data
   filename = filename_prompt("save to:")
-  file = File.open(filename, "w")
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+  File.open(filename, "w") do |file|
+    @students.each do |student|
+      student_data = [student[:name], student[:cohort]]
+      csv_line = student_data.join(",")
+      file.puts csv_line
+    end
   end
-  file.close
 end
 
 def check_file_exists(filename)
@@ -69,13 +69,13 @@ end
 
 def load_data(filename)
   if check_file_exists(filename)
-    file = File.open(filename,"r")
-    file.readlines.each do |line|
-      name, cohort = line.chomp.split(",")
-      append_students_array(name, cohort)
+    File.open(filename,"r") do |file|
+      file.readlines.each do |line|
+        name, cohort = line.chomp.split(",")
+        append_students_array(name, cohort)
+      end
     end
-    file.close
-    puts "Loaded #{@students.count} students from #{filename}"
+    puts "[loaded #{@students.count} students from #{filename}]"
   end
 end
 
@@ -102,12 +102,11 @@ def process(selection)
     input_students
     puts "[input sucessful]"
   when "2" then show_students
-  when "3" then
+  when "3"
     save_data
     puts "[data saved]"
-  when "4" then
-    load_data(filename_prompt("load from:"))
-  when "9" then
+  when "4" then load_data(filename_prompt("load from:"))
+  when "9"
     puts "[program ended]"
     exit
   else
