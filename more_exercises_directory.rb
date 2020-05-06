@@ -90,11 +90,17 @@ end
 
 def process(selection)
   case selection
-  when "1" then input_students
+  when "1"
+    input_students
+    puts "[input sucessful]"
   when "2" then show_students
-  when "3" then save_data
+  when "3" then
+    save_data
+    puts "[data saved]"
   when "4" then load_data
-  when "9" then exit
+  when "9" then
+    puts "[program ended]"
+    exit
   else
     puts "I don't know what you meant, try again"
   end
