@@ -33,8 +33,8 @@ def print_menu
   options = {
     "1": "Input the students",
     "2": "Show the students",
-    "3": "Save the list to students.csv",
-    "4": "Load the list from students.csv",
+    "3": "Save list of students",
+    "4": "Load list of students",
     "9": "Exit"
   }
   puts "-------------"
@@ -48,7 +48,8 @@ def show_students
 end
 
 def save_data
-  file = File.open(@default_file, "w")
+  filename = filename_prompt("save to:")
+  file = File.open(filename, "w")
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
     csv_line = student_data.join(",")
@@ -57,35 +58,42 @@ def save_data
   file.close
 end
 
-def load_data(filename = @default_file)
-  file = File.open(filename,"r")
-  file.readlines.each do |line|
-    name, cohort = line.chomp.split(",")
-    append_students_array(name, cohort)
+def check_file_exists(filename)
+  if File.exists?(filename)
+    return true
+  else
+    puts "Sorry, #{filename} doesn't exist"
+    return false
   end
-  file.close
+end
+
+def load_data(filename)
+  if check_file_exists(filename)
+    file = File.open(filename,"r")
+    file.readlines.each do |line|
+      name, cohort = line.chomp.split(",")
+      append_students_array(name, cohort)
+    end
+    file.close
+    puts "Loaded #{@students.count} students from #{filename}"
+  end
 end
 
 def check_file_given
   return !ARGV.first.nil?
 end
 
-def check_file_exists(filename)
-  return File.exists?(filename)
-end
-
 def startup_load
   if check_file_given
-    if check_file_exists(ARGV.first)
-      load_data(ARGV.first)
-      puts "Loaded #{@students.count} students from #{ARGV.first}"
-    else
-      puts "Sorry, #{ARGV.first} doesn't exist"
-    end
+    load_data(ARGV.first)
   else
-    load_data
-    puts "Loaded #{@students.count} students from default file: #{@default_file}"
+    load_data(@default_file)
   end
+end
+
+def filename_prompt(action)
+  puts "Please enter the name of the file you wish to #{action}"
+  return STDIN.gets.chomp
 end
 
 def process(selection)
@@ -97,7 +105,8 @@ def process(selection)
   when "3" then
     save_data
     puts "[data saved]"
-  when "4" then load_data
+  when "4" then
+    load_data(filename_prompt("load from:"))
   when "9" then
     puts "[program ended]"
     exit
