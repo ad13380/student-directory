@@ -68,7 +68,7 @@ end
 def load_data(filename)
   if check_file_exists(filename)
     CSV.foreach(filename) do |line|
-      if line != ""
+      if !line.empty?
         name, cohort = line
         append_students_array(name, cohort)
       end
